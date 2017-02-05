@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Written on to work with Node 6.4.0 and NPM 3.10.3",
   "main": "xml_file_changer.js",
-  "dependencies": {
-    "xml2js": "^0.4.17"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

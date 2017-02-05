@@ -1,10 +1,8 @@
-Written on to work with Node 6.4.0 and NPM 3.10.3
+Written on to work with Node 6.4.0
 
 To run:
 
-Make sure you have Node and NPM installed on your machine
-
-Install dependencies with `npm install`
+Make sure you have Node installed on your machine
 
 Run the script with `node xml_file_changer.js {path to file you want to convert}`
 
