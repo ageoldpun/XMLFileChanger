@@ -1,12 +1,22 @@
 fs = require('fs');
 
+// Identifies files in the Clip####.mxf format
+var mkfFileIdentifier = /[cC][lL][iI][pP]\d{4}.[mM][xX][fF]/g;
+
+// Identifies files in #####.mts format
+var mtsFileIdentifier = /\d{5}.[mM][tT][sS]/g;
+
+// Identifies what to append to the file name A_##
+var appendIdentifier = /[a-zA-Z]_\d{2}/g;
+
 fs.readFile(process.argv[2], 'utf8', function (err, data) {
   if (err) {
     return console.log('Oh snap! There was an error when reading the file: ', err);
   }
 
   var returnData = data;
-  var makeReplacementElements = function (element, appendIdentifier) {
+
+  var makeReplacementElements = function (element) {
     var replacementElements = [];
     element.forEach(function (oldElement) {
       var append = oldElement.match(appendIdentifier);
@@ -25,16 +35,10 @@ fs.readFile(process.argv[2], 'utf8', function (err, data) {
   };
 
   var replaceElements = function (replacementElements) {
-    return new Promise(function (resolve, reject) {
-      replacementElements.forEach(function (elementObj) {
-        returnData = returnData.replace(elementObj.oldElement, elementObj.newElement);
-      });
+    replacementElements.forEach(function (elementObj) {
+      returnData = returnData.replace(elementObj.oldElement, elementObj.newElement);
     });
   };
-
-  var mkfFileIdentifier = /[cC][lL][iI][pP]\d{4}.[mM][xX][fF]/g;
-  var mtsFileIdentifier = /\d{5}.[mM][tT][sS]/g;
-  var appendIdentifier = /[a-zA-Z]_\d{2}/g;
 
   var relativePathElement = /<RelativePath>[\s\S]*?<\/RelativePath>/g;
   var filePathElement = /<FilePath>[\s\S]*?<\/FilePath>/g;
@@ -43,9 +47,9 @@ fs.readFile(process.argv[2], 'utf8', function (err, data) {
   var matchingRelativePathElement = data.match(relativePathElement);
   var matchingFilePathElement = data.match(filePathElement);
   var matchingActualMediaFilePathElement = data.match(actualMediaFilePathElement);
-  var replacementRelativePathElements = makeReplacementElements(matchingRelativePathElement, appendIdentifier);
-  var replacementFilePathElements = makeReplacementElements(matchingFilePathElement, appendIdentifier);
-  var replacementActualMediaPathElements = makeReplacementElements(matchingActualMediaFilePathElement, appendIdentifier);
+  var replacementRelativePathElements = makeReplacementElements(matchingRelativePathElement);
+  var replacementFilePathElements = makeReplacementElements(matchingFilePathElement);
+  var replacementActualMediaPathElements = makeReplacementElements(matchingActualMediaFilePathElement);
   var masterReplacementArray = replacementRelativePathElements.concat(replacementFilePathElements, replacementActualMediaPathElements);
 
   replaceElements(masterReplacementArray);
